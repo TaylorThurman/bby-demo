@@ -4,10 +4,12 @@ import test.interview.demo.domain.BillingRecord;
 import test.interview.demo.domain.Invoice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import test.interview.demo.exception.ResourceNotFoundException;
 import test.interview.demo.repository.InvoiceRepo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -16,8 +18,10 @@ public class InvoiceService {
 
     private final InvoiceRepo invoiceRepo;
 
-    public Invoice getInvoice(UUID id) {
-        return filterOlderDuplicateBillingRecords(invoiceRepo.getById(id));
+    public Invoice getInvoice(UUID id) throws ResourceNotFoundException {
+        Invoice invoice = Optional.ofNullable(invoiceRepo.getById(id))
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Invoice not found with id: %s", id)));
+        return filterOlderDuplicateBillingRecords(invoice);
     }
 
     /**
