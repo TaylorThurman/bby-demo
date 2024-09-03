@@ -8,9 +8,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-   @ExceptionHandler(ResourceNotFoundException.class)
-   @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleException(ResourceNotFoundException e) {
-       return e.getMessage();
-   }
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(BadUserRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleException(BadUserRequestException e) {
+        return e.getMessage();
+    }
 }
