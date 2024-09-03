@@ -18,13 +18,4 @@ public class Invoice implements Core {
     private UUID id;
     private InvoiceStatus status;
     private User user;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
 }

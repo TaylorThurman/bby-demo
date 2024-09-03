@@ -15,14 +15,5 @@ public class BillingRecord implements Core {
     private Date createdTime;
     private BigDecimal price;
     private User user;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
 }
 
