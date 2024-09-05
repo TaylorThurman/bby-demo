@@ -19,6 +19,16 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Retrieves a list of user records (either invoices or billing records) based on the specified type and optional date range.
+     *
+     * @param id         The unique identifier of the user whose records are to be retrieved.
+     * @param type       The type of records to retrieve. Must be either "invoices" or "billing_records".
+     * @param dateAfter  The start date of the filter range (inclusive). If null, no lower bound is applied.
+     * @param dateBefore The end date of the filter range (inclusive). If null, no upper bound is applied.
+     * @return A {@link ResponseEntity} containing a list of user records of the specified type, filtered by the provided date range.
+     * @throws BadUserRequestException if the specified type is invalid, or if the date range is invalid (i.e., date_after is after date_before).
+     */
     @GetMapping("/{id}/records")
     public ResponseEntity<List<?>> getUserRecords(@PathVariable("id") int id,
                                                   @RequestParam("type") String type,

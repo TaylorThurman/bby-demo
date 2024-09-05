@@ -18,6 +18,13 @@ public class InvoiceService {
 
     private final InvoiceRepo invoiceRepo;
 
+    /**
+     * Retrieves an invoice by its unique identifier and filters out any older duplicate billing records.
+     *
+     * @param id The unique identifier of the invoice to be retrieved.
+     * @return The {@link Invoice} object associated with the specified ID, with older duplicate billing records filtered out.
+     * @throws ResourceNotFoundException if no invoice is found with the specified ID.
+     */
     public Invoice getInvoice(UUID id) throws ResourceNotFoundException {
         Invoice invoice = Optional.ofNullable(invoiceRepo.getById(id))
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Invoice not found with id: %s", id)));
@@ -25,10 +32,11 @@ public class InvoiceService {
     }
 
     /**
-     * Filters out any billing records that have duplicate ID's and only returns the record with the most recent date.
+     * Filters out older duplicate billing records from an invoice, keeping only the most recent record for each unique billing record ID.
      *
-     * @param invoice Invoice retrieved from the database.
-     * @return Invoice with filtered billing records.
+     * @param invoice The {@link Invoice} object to be processed.
+     * @return The processed {@link Invoice} object with older duplicate billing records removed.
+     *         If the invoice has no billing records or only one billing record, the original invoice is returned unchanged.
      */
     private Invoice filterOlderDuplicateBillingRecords(Invoice invoice) {
         if (invoice.getBillingRecords() == null || invoice.getBillingRecords().size() <= 1) return invoice;

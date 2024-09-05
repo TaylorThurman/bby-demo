@@ -19,6 +19,13 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
+    /**
+     * Retrieves an invoice by its unique identifier (UUID).
+     *
+     * @param id The unique identifier of the invoice as a string. This should be a valid UUID.
+     * @return A {@link ResponseEntity} containing the {@link Invoice} object associated with the specified ID.
+     * @throws BadUserRequestException if the provided ID is not a valid UUID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Invoice> getInvoiceById(@PathVariable String id) {
         UUID invoiceId;
