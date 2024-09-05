@@ -19,25 +19,22 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}/invoices")
-    public ResponseEntity<List<Invoice>> getUserInvoices(@PathVariable("id") int id,
-                                                         @RequestParam(required = false, value = "date_after") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateAfter,
-                                                         @RequestParam(required = false, value = "date_before") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateBefore) throws BadUserRequestException {
+    @GetMapping("/{id}/records")
+    public ResponseEntity<List<?>> getUserRecords(@PathVariable("id") int id,
+                                                  @RequestParam("type") String type,
+                                                  @RequestParam(required = false, value = "date_after") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateAfter,
+                                                  @RequestParam(required = false, value = "date_before") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateBefore) throws BadUserRequestException {
         if (dateAfter != null && dateBefore != null && dateAfter.after(dateBefore)) {
             throw new BadUserRequestException("date_after cannot be later than date_before");
         }
 
-        return ResponseEntity.ok(userService.getUserInvoices(id, dateAfter, dateBefore));
-    }
+        List<?> records = switch (type.toLowerCase()) {
+            case "invoices" -> userService.getUserInvoices(id, dateAfter, dateBefore);
+            case "billing_records" -> userService.getUserBillingRecords(id, dateAfter, dateBefore);
+            default ->
+                    throw new BadUserRequestException("Invalid type specified. Use 'invoices' or 'billing_records'.");
+        };
 
-    @GetMapping("/{id}/billing_records")
-    public ResponseEntity<List<BillingRecord>> getUserBillingRecords(@PathVariable("id") int id,
-                                                                     @RequestParam(required = false, value = "date_after") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateAfter,
-                                                                     @RequestParam(required = false, value = "date_before") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateBefore) throws BadUserRequestException {
-        if (dateAfter != null && dateBefore != null && dateAfter.after(dateBefore)) {
-            throw new BadUserRequestException("date_after cannot be later than date_before");
-        }
-
-        return ResponseEntity.ok(userService.getUserBillingRecords(id, dateAfter, dateBefore));
+        return ResponseEntity.ok(records);
     }
 }
