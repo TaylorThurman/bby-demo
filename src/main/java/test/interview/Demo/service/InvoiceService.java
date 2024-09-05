@@ -26,12 +26,14 @@ public class InvoiceService {
 
     /**
      * Filters out any billing records that have duplicate ID's and only returns the record with the most recent date.
+     *
      * @param invoice Invoice retrieved from the database.
      * @return Invoice with filtered billing records.
      */
     private Invoice filterOlderDuplicateBillingRecords(Invoice invoice) {
-        Map<UUID, BillingRecord> rMap = new HashMap<>();
+        if (invoice.getBillingRecords() == null || invoice.getBillingRecords().size() <= 1) return invoice;
 
+        Map<UUID, BillingRecord> rMap = new HashMap<>();
         for (BillingRecord billingRecord : invoice.getBillingRecords()) {
             if (rMap.containsKey(billingRecord.getId())) {
                 BillingRecord existingRecord = rMap.get(billingRecord.getId());
